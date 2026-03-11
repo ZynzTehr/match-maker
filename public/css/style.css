@@ -1,0 +1,23 @@
+body {
+  background-color: hsl(6, 93%, 71%);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+h1 {
+  letter-spacing: 4px;
+}
+
+i:hover {
+  color: hsl(60, 56%, 91%);
+  cursor: pointer;
+  transform: scale(1.4);
+}
+
+.hide{
+  display: none;
+}
+
+/* ======================= Common Styles ============================ */
+i, i:hover {
+  transition: transform 1s ease-in-out, color 1s ease-in-out;
+}

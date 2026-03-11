@@ -1,0 +1,26 @@
+#photoSize {
+  height: 400px;
+  width: 400px;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+.radioGroup input[type='radio'] {
+  display: none;
+}
+
+.radioGroup label {
+  display: inline-block;
+  margin: .5rem .3rem .3rem .3rem;
+  color: #f5f5dc;
+  background-color: #2f4f4f;
+  border: 2px solid #333;
+  border-radius: 8px;
+  padding: .5rem;
+}
+
+.radioGroup input[type='radio']:checked+label {
+  color: #000;
+}
