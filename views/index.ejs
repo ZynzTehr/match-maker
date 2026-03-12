@@ -1,0 +1,18 @@
+<%- include('partials/header', { title: 'Home', pageScript: 'home.js' }) %>
+
+    <main class="container">
+      <div class="d-flex flex-column align-content-center">
+        <header class="mt-5">
+          <h1 class="display-1 text-center"> Welcome to Match Maker! </h1>
+        </header>
+        <h2 id="userCount" class="display-6 text-center my-2">
+          There are currently <%= count %> people listed in our Database!
+        </h2>
+        <h4 class="text-center my-2"> Click the button below to start the survey and find a match for you! </h4>
+        <button type="button" id="goToSurvey" class="btn btn-info w-25 align-self-center rounded text-dark py-1">
+          Click here to take our Survey!
+        </button>
+      </div>
+    </main>
+
+<%- include('partials/footer', { pageScript: 'home.js' }) %>

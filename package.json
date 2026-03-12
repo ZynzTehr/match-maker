@@ -1,5 +1,5 @@
 {
-  "name": "Match_Maker",
+  "name": "match-maker",
   "version": "1.0.0",
   "description": "Match Maker Project",
   "main": "server.js",
@@ -11,6 +11,7 @@
   "author": "Jorge Bucio",
   "license": "ISC",
   "dependencies": {
+    "ejs": "^5.0.1",
     "express": "^4.17.1"
   },
   "devDependencies": {

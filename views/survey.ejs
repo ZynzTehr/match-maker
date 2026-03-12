@@ -1,0 +1,53 @@
+<%- include('partials/header', { title: 'Survey', extraCss: 'survey.css' }) %>
+
+    <main class="container text-center my-2">
+      <div id="welcomeContainer">
+        <h1 class="welcome"> Welcome to the Match Maker Survey! </h1>
+        <p class="welcome"> Please complete our survey to find a match! </p>
+      </div>
+
+      <div id="surveyContainer" class="welcome">
+        <form id="surveyForm" action="/api/friendsArray" method="post">
+
+          <% questions.forEach(function(question, index) { %>
+            <div class="divider my-5"></div>
+            <div id="question<%= index %>" class="surveyText px-5">
+              <h4 class="text-center"><%= question %></h4>
+            </div>
+            <div class="radioGroup text-center mb-5">
+              <input id="form1row<%= index %>" type="radio" name="scores[<%= index %>]" value="1" />
+                <label for="form1row<%= index %>">Strongly Disagree</label>
+              <input id="form2row<%= index %>" type="radio" name="scores[<%= index %>]" value="2" />
+                <label for="form2row<%= index %>">Disagree</label>
+              <input id="form3row<%= index %>" type="radio" name="scores[<%= index %>]" value="3" checked />
+                <label for="form3row<%= index %>">No Preference</label>
+              <input id="form4row<%= index %>" type="radio" name="scores[<%= index %>]" value="4" />
+                <label for="form4row<%= index %>">Agree</label>
+              <input id="form5row<%= index %>" type="radio" name="scores[<%= index %>]" value="5" />
+                <label for="form5row<%= index %>">Strongly Agree</label>
+            </div>
+          <% }); %>
+
+          <div id="namePhotoContainer" class="text-center">
+            <div class="d-flex justify-content-between">
+              <div class="form-group form-floating m-2 w-75">
+                <input name="name" class="form-control" type="text" placeholder="Enter Name Here" id="nameInput" required />
+                <label for="nameInput">Enter Name Here</label>
+              </div>
+              <div class="form-group form-floating m-2 w-75">
+                <input name="photo" class="form-control" type="text" placeholder="Enter Photo URL" id="photoInput" required />
+                <label for="photoInput">Enter Photo URL Here</label>
+              </div>
+            </div>
+            <button class="btn btn-info text-dark m-2 w-75" type="submit">Submit</button>
+          </div>
+
+        </form>
+      </div>
+
+      <section id="homeBtnContainer">
+        <a href="/" class="btn btn-secondary text-white my-4"> Restart Survey </a>
+      </section>
+    </main>
+
+<%- include('partials/footer', {}) %>

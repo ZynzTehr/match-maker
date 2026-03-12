@@ -1,87 +1,80 @@
 const { log } = console;
-/* Code commented out works together with other code in different files. 
-  I left it in for posterity to show different ways to achieve the same goal */
 const express = require('express');
 const path = require('path');
 const bp = require('body-parser');
-// const fs = require('fs');
 const app = express();
-let router = express.Router();
 
-// Port for server..
 const PORT = process.env.PORT || 7000;
 
-// Import friendsArray.json data..
 const friendsArray = require('./app/data/friends.json');
 
-// Middleware..
+const questions = [
+  'Do you like dogs?',
+  'Do you like mexican food?',
+  'Do you like reading books?',
+  'Do you like camping?',
+  'Do you like art?',
+  'Do you like dancing?',
+  'Do you like cats?',
+  'Do you like music?',
+  'Do you like the beach?',
+  'Do you like hiking?',
+];
+
+// View engine setup
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+
+// Middleware
 app.use(bp.urlencoded({ extended: true }));
-
 app.use(express.json());
+app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(express.static((path.join(__dirname, '/public'))));
+// Home page — render index.ejs with current user count
+app.get('/', (req, res) => {
+  res.render('index', { count: friendsArray.length });
+});
 
-
+// Survey page — render survey.ejs with questions array
 app.get('/survey', (req, res) => {
-  res.sendFile(path.join(__dirname + 'public/survey.html'))
+  res.render('survey', { questions });
 });
 
-
-// GET function for survey and friends array data storage..
-router.get('/api/friendsArray', (req, res) => {
-  res.sendFile(path.join(__dirname + '/app/data/friends.json'))
+// Match result page — render match.ejs with name & photo from query string
+app.get('/match', (req, res) => {
+  const { name, photo } = req.query;
+  res.render('match', { name, photo });
 });
 
-// Friend match maker..
-// app.post('/api/friendsArray', (req, res) => {
-//   const newFriend = req.body;
-//   let match;
-//   let score = 100;
+// API — GET all friends (kept for reference / debugging)
+app.get('/api/friendsArray', (req, res) => {
+  res.json(friendsArray);
+});
 
-//   // Loops to find a match..
-//   for (let friend in friendsArray) {
-//     let tmp = 0;
-//     for (let n = 0; n < 10; ++n) {
-//       tmp += Math.abs(+newFriend.scores[n] - friendsArray[friend].scores[n]);
-//     }
-//     if (tmp < score) {
-//       score = tmp;
-//       match = friendsArray[score];
-//     }
-//   }
+// API — POST survey, find match, redirect to /match page
+app.post('/api/friendsArray', (req, res) => {
+  const newUser = req.body;
+  const scores = newUser.scores.map(Number);
 
-//   // friendsArray.push and fs.write are used to add new user into friends.json file 
-//   friendsArray.push(newFriend);
-//   fs.writeFile(path.join(__dirname + '/app/data/friends.json'), JSON.stringify(friendsArray, null, 2), err => {
-//     if (err) throw err;
-//   });
+  const newTotal = scores.reduce((a, b) => a + b, 0);
 
-//   // Send response back to survey.js to append match and photo to browser..
-//   res.send(match);
-// });
+  let bestMatch = null;
+  let lowestDiff = Infinity;
 
-// Friend match with reduce..
-app.post('/api/friendsArray', (req,res) => {
-  let valueToMatch;
-  let newUser = req.body;
-  let surveyScores = newUser.scores.reduce((x, y) => (+x) + (+y));
-  
-  let findMatches = friendsArray.map(elem => new Array(elem.name, elem.scores)
-  .reduce((acc,userValues) => {
-    valueToMatch = userValues.reduce((x, y) => x + y)
-    return userValues ? [`${acc}`, `${Math.abs(valueToMatch - surveyScores)}`] : null;
-  }));
-  let sortMatch = findMatches.reduce((x, y) => {
-    return x[1] < y[1] ? [x[0], x[1]] : [y[0], y[1]];
+  friendsArray.forEach(friend => {
+    const friendTotal = friend.scores.reduce((a, b) => a + b, 0);
+    const diff = Math.abs(friendTotal - newTotal);
+    if (diff < lowestDiff) {
+      lowestDiff = diff;
+      bestMatch = friend;
+    }
   });
-  
-  let filterMatch = friendsArray.filter(elem => elem.name === sortMatch[0]);
-  friendsArray.push(newUser);
-  res.send(filterMatch);
-});
 
-app.use(router);
+  friendsArray.push({ name: newUser.name, photo: newUser.photo, scores });
+
+  res.redirect(`/match?name=${encodeURIComponent(bestMatch.name)}&photo=${encodeURIComponent(bestMatch.photo)}`);
+});
 
 app.listen(PORT, () => {
-  log(`Server running on PORT: http://localhost:${PORT} \n holding down " control + C " will stop the server`);
+  log(`Server running on PORT: http://localhost:${PORT}`);
 });
