@@ -4,7 +4,7 @@ const path = require('path');
 const bp = require('body-parser');
 const app = express();
 
-const PORT = process.env.PORT || 7000;
+const PORT = process.env.PORT || 8000;
 
 const friendsArray = require('./app/data/friends.json');
 
