@@ -1,0 +1,17 @@
+name: Keep Alive
+
+on:
+  schedule:
+    # Runs every 14 minutes between 8:00 AM and 8:00 PM Pacific Time (15:00 - 03:00 UTC)
+    - cron: '*/14 15-23 * * *'
+    - cron: '*/14 0-3 * * *'
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Match Maker on Render
+        run: |
+          status_code=$(curl -s -o /dev/null -w "%{http_code}" https://match-maker-1.onrender.com)
+          echo "Render Ping Status Code: $status_code"
